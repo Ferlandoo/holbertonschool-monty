@@ -25,5 +25,7 @@ int main(int argc, char *argv[])
         printf("%s", line);
         get_func(line_number, line, &top);
     }
-    
+    free(line);
+    fclose(file);
+    return (0);
 }
