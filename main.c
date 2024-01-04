@@ -3,7 +3,7 @@
 int main(int argc, char *argv[])
 {
     stack_t *top = NULL;
-    char *line = NULL;
+    char *line = NULL, opcode = NULL;
     size_t len = 0;
     unsigned int line_number = 0;
     FILE *file;
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     {
         line_number++;
         printf("%s", line);
-        get_func(line_number, line, &top);
+        get_func(opcode)(top, line_number);
     }
     free(line);
     fclose(file);
