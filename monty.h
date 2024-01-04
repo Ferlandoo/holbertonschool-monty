@@ -42,5 +42,6 @@ void pint(stack_t **stack, unsigned int line_number);
 void pop(stack_t **stack, unsigned int line_number);
 void push(stack_t **stack, unsigned int line_number);
 void swap(stack_t **stack, unsigned int line_number);
+void (*get_func(char *opcode)) (stack_t **stack, unsigned int line_number);
 
 #endif
