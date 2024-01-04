@@ -100,26 +100,42 @@ void pop(stack_t **stack, unsigned int line_number)
 
 void push(stack_t **stack, unsigned int line_number)
 {
-    stack_t *newnode = malloc(sizeof(stack_t));
+	stack_t *new_node;
+	char *token;
+	int i = 0;
 
-    if (newnode == NULL)
-    {
-        printf("Error: malloc failed\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    newnode->n = line_number;
-    newnode->next = NULL;
-    newnode->prev = NULL;
-
-    if (*stack == NULL)
-        *stack = newnode;
-    else
-    {
-        newnode->next = *stack;
-        (*stack)->prev = newnode;
-        *stack = newnode;
-    }
+	new_node = malloc(sizeof(stack_t));
+	if (new_node == NULL)
+	{
+		fprintf(stderr, "Error: malloc failed\n");
+		exit(EXIT_FAILURE);
+	}
+	token = strtok(NULL, " \n\t\r");
+	if (token == NULL)
+	{
+		fprintf(stderr, "L%d: usage: push integer\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+	while (token[i] != '\0')
+	{
+		if (token[i] == '-' && i == 0)
+		{
+			i++;
+			continue;
+		}
+		if (isdigit(token[i]) == 0)
+		{
+			fprintf(stderr, "L%d: usage: push integer\n", line_number);
+			exit(EXIT_FAILURE);
+		}
+		i++;
+	}
+	new_node->n = atoi(token);
+	new_node->prev = NULL;
+	new_node->next = *stack;
+	if (*stack != NULL)
+		(*stack)->prev = new_node;
+	*stack = new_node;
 }
 
 /**

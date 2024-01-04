@@ -18,12 +18,11 @@ void (*get_func(char *opcode)) (stack_t **stack, unsigned int line_number)
 		{"add", add},
 		{NULL, NULL}
 	};
-	while (structures[i].opcode)
+	for (i = 0; structures[i].opcode != NULL; i++)
 	{
-		if (strcmp(structures[i].opcode, opcode) == 0)
+		if (strcmp(opcode, structures[i].opcode) == 0)
+		{
 			return (structures[i].f);
-
-		i++;
+		}
 	}
-	return (NULL);
 }
