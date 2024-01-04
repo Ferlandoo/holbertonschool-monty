@@ -44,6 +44,6 @@ int main (int argc, char **argv)
         f(&stack, line_number);
     }
     free(line);
-    fclose(fp);
+    fclose(file);
     exit(EXIT_SUCCESS);
 }
