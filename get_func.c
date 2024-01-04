@@ -1,14 +1,14 @@
 #include "monty.h"
 
 /**
-* get_func - function that returns a pointer to respective function
-* @line_number: -holds the value for the line number
-* Return: (structures[i].f)
-*/
+ * get_func - function that selects the correct function to perform
+ * @opcode: -holds the value of the opcode
+ * Return: (void)
+ */
 
-void (*get_func(char *opcode))(stack_t **stack, unsigned int line_number)
+void (*get_func(char *opcode)) (stack_t **stack, unsigned int line_number)
 {
-	instruction_t structures[] = {
+	instruction_t opcodes[] = {
 		{"push", push},
 		{"pall", pall},
 		{"pint", pint},
@@ -20,10 +20,10 @@ void (*get_func(char *opcode))(stack_t **stack, unsigned int line_number)
 	};
 	int i = 0;
 
-	while (structures[i].opcode != NULL)
+	while (opcodes[i].opcode != NULL)
 	{
-		if (strcmp(opcode, structures[i].opcode) == 0)
-			return (structures[i].f);
+		if (strcmp(opcode, opcodes[i].opcode) == 0)
+			return (opcodes[i].f);
 		i++;
 	}
 	return (NULL);
