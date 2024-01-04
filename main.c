@@ -7,16 +7,14 @@
  * Return: 0 on success
  */
 
-int main (int argc, char **argv)
+int main(int argc, char *argv[])
 {
     FILE *file;
-    char *line = NULL;
+    char *line = NULL, *opcode = NULL;
     size_t len = 0;
-    ssize_t read;
     unsigned int line_number = 0;
-    char *opcode;
     stack_t *stack = NULL;
-    void (*f)(stack_t **stack, unsigned int line_number);
+    void (*func)(stack_t **stack, unsigned int line_number);
 
     if (argc != 2)
     {
@@ -29,21 +27,22 @@ int main (int argc, char **argv)
         fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
         exit(EXIT_FAILURE);
     }
-    while ((read = getline(&line, &len, file)) != -1)
+    while (getline(&line, &len, file) != -1)
     {
         line_number++;
         opcode = strtok(line, " \n\t");
         if (opcode == NULL || opcode[0] == '#')
             continue;
-        f = get_func(opcode);
-        if (f == NULL)
+        func = get_func(opcode);
+        if (func == NULL)
         {
-            fprintf(stderr, "L%u: unknown instruction %s\n", line_number, opcode);
+            fprintf(stderr, "L<%d>: unknown instruction %s\n", line_number, opcode);
             exit(EXIT_FAILURE);
         }
-        f(&stack, line_number);
+        func(&stack, line_number);
     }
+    free_stack(stack);
     free(line);
     fclose(file);
-    exit(EXIT_SUCCESS);
+    return (0);
 }

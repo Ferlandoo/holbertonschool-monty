@@ -6,9 +6,8 @@
 * Return: (structures[i].f)
 */
 
-void (*get_func(char *opcode)) (stack_t **stack, unsigned int line_number)
+void (*get_func(char *opcode))(stack_t **stack, unsigned int line_number)
 {
-	int i = 0;
 	instruction_t structures[] = {
 		{"push", push},
 		{"pall", pall},
@@ -16,13 +15,16 @@ void (*get_func(char *opcode)) (stack_t **stack, unsigned int line_number)
 		{"pop", pop},
 		{"swap", swap},
 		{"add", add},
+		{"nop", nop},
 		{NULL, NULL}
 	};
-	for (i = 0; structures[i].opcode != NULL; i++)
+	int i = 0;
+
+	while (structures[i].opcode != NULL)
 	{
 		if (strcmp(opcode, structures[i].opcode) == 0)
-		{
 			return (structures[i].f);
-		}
+		i++;
 	}
+	return (NULL);
 }

@@ -1,136 +1,45 @@
 #include "monty.h"
 
 /**
- * add -adds the top 2 values of the stack
- * @stack: -points to the head of the stack
- * @line_number: -holds the value of the line
+ * push - function that pushes an element to the stack
+ * @stack: -holds the value of the stack
+ * @line_number: -holds the value for the line number
+ * Return: (void)
  */
-
-void add(stack_t **stack, unsigned int line_number)
-{
-	stack_t *tmp;
-	int sum;
-	int nr_nodes = 0;
-
-	if (*stack == NULL)
-	{
-		fprintf(stderr, "L<%d\n>: can't add, stack too short", line_number);
-		exit(EXIT_FAILURE);
-	}
-	tmp = *stack;
-
-	while (tmp != NULL)
-	{
-		nr_nodes++;
-		tmp = tmp->next;
-	}
-	if (nr_nodes < 2)
-	{
-		fprintf(stderr, "L<%d\n>: can't add, stack too short", line_number);
-		exit(EXIT_FAILURE);
-	}
-	sum = (*stack)->n + (*stack)->next->n;
-	(*stack)->next->n = sum;
-	*stack = (*stack)->next;
-	free(tmp);
-}
-
-/**
-* pall -prints all the values of the stack
-* @stack: -points to the head of the stack
-* @line_number: holds value for the line number in monty file
-*/
-
-void pall(stack_t **stack, unsigned int line_number)
-{
-    stack_t *virtual = *stack;
-    (void) line_number;
-
-    if (*stack == NULL)
-        return;
- 
-    while(virtual != NULL)
-    {
-        printf("%d\n", virtual->n);
-        virtual = virtual->next;
-    }
-}
-
-/**
-* pint -prints the top value of the stack
-* @stack: -points to the head of the stack
-* @line_number: -holds value of the line in monty file
-*/
-
-void pint(stack_t **stack, unsigned int line_number)
-{
-    if (*stack == NULL)
-    {
-        fprintf(stderr, "L%d: can't pint, stack empty\n", line_number);
-        exit(EXIT_FAILURE);
-    }
-    printf("%d\n", (*stack)->n);
-}
-
-/**
- * pop -pops away the top node
- * @stack: -points to the head of the stack
- * @line_number: -holds value of the line
- */
-
-void pop(stack_t **stack, unsigned int line_number)
-{
-	stack_t *tmp;
-
-	if (*stack == NULL)
-	{
-		fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
-		exit(EXIT_FAILURE);
-	}
-	tmp = *stack;
-	*stack = (*stack)->next;
-	free(tmp);
-}
-
-/**
-* push -pushes a new element into the stack
-* @stack: -points to the head of the stack
-* @line_number: holds value for the line number in monty file
-*/
 
 void push(stack_t **stack, unsigned int line_number)
 {
 	stack_t *new_node;
-	char *token;
+	char *value = NULL;
 	int i = 0;
 
+	value = strtok(NULL, " \n\t");
+	if (value == NULL)
+	{
+		fprintf(stderr, "L<%d>: usage: push integer\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+	while (value[i] != '\0')
+	{
+		if (value[0] == '-' && i == 0)
+		{
+			i++;
+			continue;
+		}
+		if (isdigit(value[i]) == 0)
+		{
+			fprintf(stderr, "L<%d>: usage: push integer\n", line_number);
+			exit(EXIT_FAILURE);
+		}
+		i++;
+	}
 	new_node = malloc(sizeof(stack_t));
 	if (new_node == NULL)
 	{
 		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-	token = strtok(NULL, " \n\t\r");
-	if (token == NULL)
-	{
-		fprintf(stderr, "L%d: usage: push integer\n", line_number);
-		exit(EXIT_FAILURE);
-	}
-	while (token[i] != '\0')
-	{
-		if (token[i] == '-' && i == 0)
-		{
-			i++;
-			continue;
-		}
-		if (isdigit(token[i]) == 0)
-		{
-			fprintf(stderr, "L%d: usage: push integer\n", line_number);
-			exit(EXIT_FAILURE);
-		}
-		i++;
-	}
-	new_node->n = atoi(token);
+	new_node->n = atoi(value);
 	new_node->prev = NULL;
 	new_node->next = *stack;
 	if (*stack != NULL)
@@ -139,34 +48,133 @@ void push(stack_t **stack, unsigned int line_number)
 }
 
 /**
- * swap -swaps the most recent 2 nodes values
- * @stack: -points to the head of the stack
- * @line_number: -holds the value of the respective line
+ * pall - function that prints all the values on the stack
+ * @stack: -holds the value of the stack
+ * @line_number: -holds the value for the line number
+ * Return: (void)
+ */
+
+void pall(stack_t **stack, unsigned int line_number)
+{
+	stack_t *temp = *stack;
+
+	(void)line_number;
+	while (temp != NULL)
+	{
+		printf("%d\n", temp->n);
+		temp = temp->next;
+	}
+}
+
+/**
+ * pint - function that prints the value at the top of the stack
+ * @stack: -holds the value of the stack
+ * @line_number: -holds the value for the line number
+ * Return: (void)
+ */
+
+void pint(stack_t **stack, unsigned int line_number)
+{
+	if (*stack == NULL)
+	{
+		fprintf(stderr, "L<%d>: can't pint, stack empty\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+	printf("%d\n", (*stack)->n);
+}
+
+/**
+ * pop - function that removes the top element of the stack
+ * @stack: -holds the value of the stack
+ * @line_number: -holds the value for the line number
+ * Return: (void)
+ */
+
+void pop(stack_t **stack, unsigned int line_number)
+{
+	stack_t *temp = *stack;
+
+	if (*stack == NULL)
+	{
+		fprintf(stderr, "L<%d>: can't pop an empty stack\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+	*stack = (*stack)->next;
+	free(temp);
+}
+
+/**
+ * swap - function that swaps the top two elements of the stack
+ * @stack: -holds the value of the stack
+ * @line_number: -holds the value for the line number
+ * Return: (void)
  */
 
 void swap(stack_t **stack, unsigned int line_number)
 {
-	int nr_nodes = 0;
-	int n;
-	stack_t *tmp;
+	stack_t *temp = *stack;
+	int temp_n;
 
-	if (*stack == NULL)
-		return;
-
-	tmp = *stack;
-
-	while(tmp != NULL)
+	if (*stack == NULL || (*stack)->next == NULL)
 	{
-		nr_nodes++;
-		tmp = tmp->next;
-	}
-	if (nr_nodes < 2)
-	{
-		fprintf(stderr, "L%d: can't swap, stack too short", line_number);
+		fprintf(stderr, "L<%d>: can't swap, stack too short\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	n = (*stack)->n;
-	(*stack)->n = (*stack)->next->n;
-	(*stack)->next->n = n;
+	temp_n = temp->n;
+	temp->n = temp->next->n;
+	temp->next->n = temp_n;
+}
 
+/**
+ * add - function that adds the top two elements of the stack
+ * @stack: -holds the value of the stack
+ * @line_number: -holds the value for the line number
+ * Return: (void)
+ */
+
+void add(stack_t **stack, unsigned int line_number)
+{
+	stack_t *temp = *stack;
+	int temp_n;
+
+	if (*stack == NULL || (*stack)->next == NULL)
+	{
+		fprintf(stderr, "L<%d>: can't add, stack too short\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+	temp_n = temp->n + temp->next->n;
+	temp->next->n = temp_n;
+	*stack = (*stack)->next;
+	free(temp);
+}
+
+/**
+ * nop - function that does nothing
+ * @stack: -holds the value of the stack
+ * @line_number: -holds the value for the line number
+ * Return: (void)
+ */
+
+void nop(stack_t **stack, unsigned int line_number)
+{
+	(void)stack;
+	(void)line_number;
+}
+
+/**
+ * free_stack - function that frees the stack
+ * @stack: -holds the value of the stack
+ * Return: (void)
+*/
+
+void free_stack(stack_t *stack)
+{
+	stack_t *temp;
+
+	while (stack != NULL)
+	{
+		temp = stack;
+		stack = stack->next;
+		free(temp);
+	}
 }
