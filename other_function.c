@@ -53,27 +53,3 @@ void free_stack(stack_t *stack)
 		free(temp);
 	}
 }
-
-/**
- * trim_whitespace - function that trims whitespace from a string
- * @line: -holds the value of the string
- * Return: (void)
- */
-
-void trim_whitespace(char *line)
-{
-	int i = 0, j = 0;
-
-	while (line[i] != '\0')
-	{
-		if (line[i] == ' ' || line[i] == '\t')
-		{
-			i++;
-			continue;
-		}
-		line[j] = line[i];
-		i++;
-		j++;
-	}
-	line[j] = '\0';
-}
