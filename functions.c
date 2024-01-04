@@ -51,7 +51,7 @@ void pall(stack_t **stack, unsigned int line_number)
  
     while(virtual != NULL)
     {
-        printf("%d", virtual->n);
+        printf("%d\n", virtual->n);
         virtual = virtual->next;
     }
 }
