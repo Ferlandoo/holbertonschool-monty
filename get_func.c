@@ -1,36 +1,48 @@
 #include "monty.h"
 
 /**
- * get_func - parses commands from the line op
- * @stack: the pointer to the head of the stack
- * @op: the line with commands/instructions
- * @line_num: a number of the line
- * Return: void
- */
+* execute - executes the opcode
+* @stack: head linked list - stack
+* @counter: line_counter
+* @file: poiner to monty file
+* @content: line content
+* Return: no return
+*/
 
-void get_func(stack_t **stack, char *op, unsigned int line_num)
+int get_func(char *content, stack_t **stack, unsigned int counter, FILE *file)
 {
-	int i;
-	instruction_t ops[] = {
-		{"push", push},
-		{"pall", pall},
-		{"pint", pint},
-		{"pop", pop},
-		{"swap", swap},
-		{"add", add},
-		{"nop", nop},
-		{NULL, NULL}
-	};
+	instruction_t opst[] = {
+				{"push", push},
+				{"pall", pall},
+				{"pint", pint},
+				{"pop", pop},
+				{"swap", swap},
+				{"add", add},
+				{"nop", nop},
+				{NULL, NULL}
+				};
+	unsigned int i = 0;
+	char *op;
 
-	for (i = 0; ops[i].opcode; i++)
-		if (strcmp(op, ops[i].opcode) == 0)
-		{
-			ops[i].f(stack, line_num);
-			return;
-		}
-	if (strlen(op) != 0 && op[0] != '#')
+	op = strtok(content, " \n\t");
+	if (op && op[0] == '#')
+		return (0);
+	bus.arg = strtok(NULL, " \n\t");
+	while (opst[i].opcode && op)
 	{
-		printf("L%u: unknown instruction %s\n", line_num, op);
+		if (strcmp(op, opst[i].opcode) == 0)
+		{	opst[i].f(stack, counter);
+			return (0);
+		}
+		i++;
+	}
+	if (op && opst[i].opcode == NULL)
+	{
+		fprintf(stderr, "L%d: unknown instruction %s\n", counter, op);
+		fclose(file);
+		free(content);
+		free_stack(*stack);
 		exit(EXIT_FAILURE);
 	}
+	return (1);
 }

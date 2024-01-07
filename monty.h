@@ -7,8 +7,6 @@
 #include <ctype.h>
 #include <sys/types.h>
 
-#define DELIMS "\n \r\t"
-
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
  * @n: integer
@@ -26,6 +24,24 @@ typedef struct stack_s
 } stack_t;
 
 /**
+ * struct bus_s - variables -args, file, line content
+ * @arg: value
+ * @file: pointer to monty file
+ * @content: line content
+ * @lifi: flag change stack <-> queue
+ * Description: carries values through the program
+ */
+
+typedef struct bus_s
+{
+	char *arg;
+	FILE *file;
+	char *content;
+	int lifi;
+}  bus_t;
+extern bus_t bus;
+
+/**
  * struct instruction_s - opcode and its function
  * @opcode: the opcode
  * @f: function to handle the opcode
@@ -41,7 +57,7 @@ typedef struct instruction_s
 
 extern stack_t **global_head;
 
-void get_func(stack_t **stack, char *op, unsigned int line_num);
+int get_func(char *content, stack_t **stack, unsigned int counter, FILE *file);
 void push(stack_t **stack, unsigned int line_number);
 void pall(stack_t **stack, unsigned int line_number);
 void pint(stack_t **stack, unsigned int line_number);
@@ -49,7 +65,7 @@ void pop(stack_t **stack, unsigned int line_number);
 void swap(stack_t **stack, unsigned int line_number);
 void add(stack_t **stack, unsigned int line_number);
 void nop(stack_t **stack, unsigned int line_number);
-void read_file(char *file, stack_t **stack);
-void global_free(void);
+void free_stack(stack_t *head);
+
 
 #endif

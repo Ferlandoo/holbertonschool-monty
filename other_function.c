@@ -37,22 +37,19 @@ void nop(stack_t **stack, unsigned int line_number)
 }
 
 /**
- * global_free - globally frees memory, previously alocated in the program
- * Return: void
- */
+* free_stack - frees a doubly linked list
+* @head: head of the stack
+*/
 
-void global_free(void)
+void free_stack(stack_t *head)
 {
-	stack_t *to_free;
-	stack_t *temp = NULL;
+	stack_t *aux;
 
-	to_free = *global_head;
-	while (to_free)
+	aux = head;
+	while (head)
 	{
-		temp = to_free->next;
-
-		free(to_free);
-
-		to_free = temp;
+		aux = head->next;
+		free(head);
+		head = aux;
 	}
 }

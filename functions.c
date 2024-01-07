@@ -9,27 +9,26 @@
 
 void push(stack_t **stack, unsigned int line_number)
 {
-	stack_t *node;
-	char *num;
+	stack_t *new_node = malloc(sizeof(stack_t));
+	char *ptr;
 
-	num = strtok(NULL, DELIMS);
-	if (num == NULL)
-	{
-		printf("L%u: usage: push integer\n", line_number);
-		exit(EXIT_FAILURE);
-	}
-	node = malloc(sizeof(stack_t));
-	if (node == NULL)
+	if (!new_node)
 	{
 		printf("Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-	node->n = atoi(num);
-	node->prev = NULL;
-	node->next = *stack;
-	if (*stack != NULL)
-		(*stack)->prev = node;
-	*stack = node;
+	ptr = bus.arg;
+	if (!ptr || !isdigit(*ptr))
+	{
+		printf("L%u: usage: push integer\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+	new_node->n = atoi(ptr);
+	new_node->prev = NULL;
+	new_node->next = *stack;
+	if (*stack)
+		(*stack)->prev = new_node;
+	*stack = new_node;
 }
 
 /**
@@ -38,6 +37,7 @@ void push(stack_t **stack, unsigned int line_number)
  * @line_number: the number of a line of the file
  * Return: void
  */
+
 void pall(stack_t **stack, unsigned int line_number)
 {
 	stack_t *temp = *stack;
@@ -78,7 +78,7 @@ void pop(stack_t **stack, unsigned int line_number)
 {
 	stack_t *temp;
 
-	if (stack == NULL || *stack == NULL)
+	if (!stack || !(*stack))
 	{
 		printf("L%u: can't pop an empty stack\n", line_number);
 		exit(EXIT_FAILURE);
@@ -98,18 +98,15 @@ void pop(stack_t **stack, unsigned int line_number)
 void swap(stack_t **stack, unsigned int line_number)
 {
 	stack_t *temp;
+	int num;
 
 	if (!stack || !(*stack) || !(*stack)->next)
 	{
 		printf("L%u: can't swap, stack too short\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	temp = (*stack)->next;
-	(*stack)->prev = temp;
-	(*stack)->next = temp->next;
-	temp->prev = NULL;
-	if (temp->next)
-		temp->next->prev = *stack;
-	temp->next = *stack;
-	*stack = temp;
+	temp = *stack;
+	num = temp->n;
+	temp->n = temp->next->n;
+	temp->next->n = num;
 }
