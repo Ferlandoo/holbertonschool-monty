@@ -105,9 +105,9 @@ void pop(stack_t **stack, unsigned int line_number)
 
 /**
  * swap - function that swaps the top two elements of the stack
- * @stack: -holds the value of the stack
- * @line_number: -holds the value for the line number
- * Return: (void)
+ * @stack: holds the value of the stack
+ * @line_number: holds the value for the line number
+ * Return: void
  */
 
 void swap(stack_t **stack, unsigned int line_number)
