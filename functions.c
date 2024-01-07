@@ -1,56 +1,49 @@
 #include "monty.h"
 
 /**
- * push - function that pushes an element to the stack
- * @stack: holds the value of the stack
- * @line_number: holds the value for the line number
+ * push - pushes new node to the end of the stack
+ * @stack: double pointer to the head of the stack
+ * @line_number: the number of a line of the file
  * Return: void
  */
 
 void push(stack_t **stack, unsigned int line_number)
 {
-	char *arg;
-	int value;
+	stack_t *node;
+	char *num;
 
-	arg = strtok(NULL, " \t\n");
-	if (arg == NULL)
+	num = strtok(NULL, DELIMS);
+	if (num == NULL)
 	{
-		fprintf(stderr, "L<%d>: usage: push integer\n", line_number);
+		printf("L%u: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	value = atoi(arg);
-	if (value == 0 && strcmp(arg, "0") != 0)
+	node = malloc(sizeof(stack_t));
+	if (node == NULL)
 	{
-		fprintf(stderr, "L<%d>: usage: push integer\n", line_number);
+		printf("Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-	stack_t *new_node = malloc(sizeof(stack_t));
-	if (new_node == NULL)
-	{
-		fprintf(stderr, "Error: malloc failed\n");
-		exit(EXIT_FAILURE);
-	}
-	new_node->n = value;
-	new_node->prev = NULL;
-	new_node->next = *stack;
+	node->n = atoi(num);
+	node->prev = NULL;
+	node->next = *stack;
 	if (*stack != NULL)
-		(*stack)->prev = new_node;
-	*stack = new_node;
+		(*stack)->prev = node;
+	*stack = node;
 }
 
 /**
- * pall - function that prints all the values on the stack
- * @stack: -holds the value of the stack
- * @line_number: -holds the value for the line number
- * Return: (void)
+ * pall - prints all values from the stack
+ * @stack: double pointer to the head of the stack
+ * @line_number: the number of a line of the file
+ * Return: void
  */
-
 void pall(stack_t **stack, unsigned int line_number)
 {
 	stack_t *temp = *stack;
 
-	(void)line_number;
-	while (temp != NULL)
+	(void) line_number;
+	while (temp)
 	{
 		printf("%d\n", temp->n);
 		temp = temp->next;
@@ -58,59 +51,65 @@ void pall(stack_t **stack, unsigned int line_number)
 }
 
 /**
- * pint - function that prints the value at the top of the stack
- * @stack: holds the value of the stack
- * @line_number: holds the value for the line number
- * Return: (void)
+ * pint - prints the value at the top of the stack, followed by a new line.
+ * @stack: double pointer to the head of the stack
+ * @line_number: the number of the line in file
+ * Return: void
  */
 
 void pint(stack_t **stack, unsigned int line_number)
 {
-	if (*stack == NULL)
+	if (stack == NULL || *stack == NULL)
 	{
-		fprintf(stderr, "L<%d>: can't pint, stack empty\n", line_number);
+		printf("L%u: can't pint, stack empty\n", line_number);
 		exit(EXIT_FAILURE);
 	}
 	printf("%d\n", (*stack)->n);
 }
 
 /**
- * pop - function that removes the top element of the stack
- * @stack: holds the value of the stack
- * @line_number: holds the value for the line number
- * Return: (void)
+ * pop - removes the top element of the stack.
+ * @stack: double pointer to the head of the stack
+ * @line_number: the number of the line in file
+ * Return: void
  */
 
 void pop(stack_t **stack, unsigned int line_number)
 {
-	stack_t *temp = *stack;
+	stack_t *temp;
 
-	if (*stack == NULL)
+	if (stack == NULL || *stack == NULL)
 	{
-		fprintf(stderr, "L<%d>: can't pop an empty stack\n", line_number);
+		printf("L%u: can't pop an empty stack\n", line_number);
 		exit(EXIT_FAILURE);
 	}
+	temp = *stack;
 	*stack = (*stack)->next;
 	free(temp);
 }
 
 /**
- * swap - function that swaps the top two elements of the stack
- * @stack: holds the value of the stack
- * @line_number: holds the value for the line number
+ * swap - swaps the top two elements of the stack.
+ * @stack: double pointer to the head of the stack
+ * @line_number: the number of the line in file
  * Return: void
  */
 
 void swap(stack_t **stack, unsigned int line_number)
 {
-	int temp_n;
+	stack_t *temp;
 
-	if (*stack == NULL || (*stack)->next == NULL)
+	if (!stack || !(*stack) || !(*stack)->next)
 	{
-		fprintf(stderr, "L<%d>: can't swap, stack too short\n", line_number);
+		printf("L%u: can't swap, stack too short\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	temp_n = (*stack)->n;
-	(*stack)->n = (*stack)->next->n;
-	(*stack)->next->n = temp_n;
+	temp = (*stack)->next;
+	(*stack)->prev = temp;
+	(*stack)->next = temp->next;
+	temp->prev = NULL;
+	if (temp->next)
+		temp->next->prev = *stack;
+	temp->next = *stack;
+	*stack = temp;
 }

@@ -1,53 +1,58 @@
 #include "monty.h"
 
 /**
- * add - function that adds the top two elements of the stack
- * @stack: holds the value of the stack
- * @line_number: holds the value for the line number
+ * add - adds the top two elements of the stack.
+ * @stack: double pointer to the head of the stack
+ * @line_number: the number of the line in file
  * Return: void
  */
 
 void add(stack_t **stack, unsigned int line_number)
 {
-	stack_t *temp = *stack;
-
-	if (*stack == NULL || (*stack)->next == NULL)
+	stack_t *temp;
+	int sum;
+	if (!stack || !(*stack) || !(*stack)->next)
 	{
-		fprintf(stderr, "L<%d>: can't add, stack too short\n", line_number);
+		printf("L%u: can't add, stack too short\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	temp->next->n += temp->n;
-	*stack = (*stack)->next;
+	temp = *stack;
+	sum = temp->n + temp->next->n;
+	temp->next->n = sum;
+	*stack = temp->next;
 	free(temp);
 }
 
 /**
- * nop - function that does nothing
- * @stack: -holds the value of the stack
- * @line_number: -holds the value for the line number
- * Return: (void)
+ * nop - doesn’t do anything :)
+ * @stack: double pointer to the head of the stack
+ * @line_number: the number of the line in file
+ * Return: void
  */
 
 void nop(stack_t **stack, unsigned int line_number)
 {
-	(void)line_number;
-	(void)stack;
+	(void) stack;
+	(void) line_number;
 }
 
 /**
- * free_stack - function that frees the stack
- * @stack: -holds the value of the stack
- * Return: (void)
-*/
+ * global_free - globally frees memory, previously alocated in the program
+ * Return: void
+ */
 
-void free_stack(stack_t *stack)
+void global_free(void)
 {
-	stack_t *temp;
+	stack_t *to_free;
+	stack_t *temp = NULL;
 
-	while (stack != NULL)
+	to_free = *global_head;
+	while (to_free)
 	{
-		temp = stack;
-		stack = stack->next;
-		free(temp);
+		temp = to_free->next;
+
+		free(to_free);
+
+		to_free = temp;
 	}
 }
