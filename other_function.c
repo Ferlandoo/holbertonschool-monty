@@ -11,6 +11,7 @@ void add(stack_t **stack, unsigned int line_number)
 {
 	stack_t *temp;
 	int sum;
+
 	if (!stack || !(*stack) || !(*stack)->next)
 	{
 		printf("L%u: can't add, stack too short\n", line_number);

@@ -1,13 +1,13 @@
 #include "monty.h"
 
 /**
-* execute - executes the opcode
-* @stack: head linked list - stack
-* @counter: line_counter
-* @file: poiner to monty file
-* @content: line content
-* Return: no return
-*/
+ * get_func - get function
+ * @content: line content
+ * @stack: double pointer to the head of the stack
+ * @counter: the number of a line of the file
+ * @file: pointer to monty file
+ * Return: 0 on success
+ */
 
 int get_func(char *content, stack_t **stack, unsigned int counter, FILE *file)
 {
