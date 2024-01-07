@@ -2,44 +2,37 @@
 
 /**
  * push - function that pushes an element to the stack
- * @stack: -holds the value of the stack
- * @line_number: -holds the value for the line number
- * Return: (void)
+ * @stack: holds the value of the stack
+ * @line_number: holds the value for the line number
+ * Return: void
  */
 
 void push(stack_t **stack, unsigned int line_number)
 {
-	stack_t *new_node;
-	char *value = NULL;
-	int i = 0;
+	char *arg;
+	int value;
 
-	value = strtok(NULL, " \n\t");
-	if (value == NULL)
+	arg = strtok(NULL, " \t\n");
+	if (arg == NULL)
 	{
 		fprintf(stderr, "L<%d>: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	while (value[i] != '\0')
+	value = atoi(arg);
+	if (value == 0 && strcmp(arg, "0") != 0)
 	{
-		if (value[0] == '-' && i == 0)
-		{
-			i++;
-			continue;
-		}
-		if (isdigit(value[i]) == 0)
-		{
-			fprintf(stderr, "L<%d>: usage: push integer\n", line_number);
-			exit(EXIT_FAILURE);
-		}
-		i++;
+		fprintf(stderr, "L<%d>: usage: push integer\n", line_number);
+		exit(EXIT_FAILURE);
 	}
-	new_node = malloc(sizeof(stack_t));
+
+	/* Create a new node */
+	stack_t *new_node = malloc(sizeof(stack_t));
 	if (new_node == NULL)
 	{
 		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-	new_node->n = atoi(value);
+	new_node->n = value;
 	new_node->prev = NULL;
 	new_node->next = *stack;
 	if (*stack != NULL)
@@ -68,8 +61,8 @@ void pall(stack_t **stack, unsigned int line_number)
 
 /**
  * pint - function that prints the value at the top of the stack
- * @stack: -holds the value of the stack
- * @line_number: -holds the value for the line number
+ * @stack: holds the value of the stack
+ * @line_number: holds the value for the line number
  * Return: (void)
  */
 
@@ -85,8 +78,8 @@ void pint(stack_t **stack, unsigned int line_number)
 
 /**
  * pop - function that removes the top element of the stack
- * @stack: -holds the value of the stack
- * @line_number: -holds the value for the line number
+ * @stack: holds the value of the stack
+ * @line_number: holds the value for the line number
  * Return: (void)
  */
 
