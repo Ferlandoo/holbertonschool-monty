@@ -1,4 +1,5 @@
 #include "monty.h"
+
 /**
  * main - Entry point of the program.
  * @argc: The number of command-line arguments.
@@ -30,16 +31,14 @@ int main(int argc, char *argv[])
 	{
 		line_number++;
 		char *token = strtok(line, " \t\n");
-
 		if (token == NULL || token[0] == '#')
 			continue;
 		void (*op_func)(stack_t **, unsigned int) = get_op(token);
 		if (op_func == NULL)
 		{
 			fprintf(stderr, "L%u: unknown instruction %s\n", line_number, token);
-			free(line);
+			free(line), fclose(script_file);
 			free_stack(&stack);
-			fclose(script_file);
 			exit(EXIT_FAILURE);
 		}
 		op_func(&stack, line_number);
