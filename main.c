@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 		op_func(&stack, line_number);
-
 	}
 	free(line);
 	fclose(script_file);
