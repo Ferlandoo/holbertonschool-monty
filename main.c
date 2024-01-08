@@ -1,48 +1,52 @@
 #include "monty.h"
-
-bus_t bus = {NULL, NULL, NULL, 0};
-
 /**
-* main - monty code interpreter
-* @argc: number of arguments
-* @argv: monty file location
-* Return: 0 on success
-*/
+ * main - Entry point of the program.
+ * @argc: The number of command-line arguments.
+ * @argv: An array containing the command-line arguments as strings.
+ * Return: 0 upon success, other values for errors.
+ */
 
 int main(int argc, char *argv[])
 {
-	char *content;
-	FILE *file;
-	size_t size = 0;
-	ssize_t read_line = 1;
-	stack_t *stack = NULL;
-	unsigned int counter = 0;
-
 	if (argc != 2)
 	{
 		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
-	file = fopen(argv[1], "r");
-	bus.file = file;
-	if (!file)
+	char *filename = argv[1];
+	FILE *script_file = fopen(filename, "r");
+
+	if (script_file == NULL)
 	{
-		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
+		fprintf(stderr, "Error: Can't open file %s\n", filename);
 		exit(EXIT_FAILURE);
 	}
-	while (read_line > 0)
+	stack_t *stack = NULL;
+	char *line = NULL;
+	size_t len = 0;
+	unsigned int line_number = 0;
+
+	while (getline(&line, &len, script_file) != -1)
 	{
-		content = NULL;
-		read_line = getline(&content, &size, file);
-		bus.content = content;
-		counter++;
-		if (read_line > 0)
+		line_number++;
+		char *token = strtok(line, " \t\n");
+
+		if (token == NULL || token[0] == '#')
+			continue;
+		void (*op_func)(stack_t **, unsigned int) = get_op(token);
+		if (op_func == NULL)
 		{
-			get_func(content, &stack, counter, file);
+			fprintf(stderr, "L%u: unknown instruction %s\n", line_number, token);
+			free(line);
+			free_stack(&stack);
+			fclose(script_file);
+			exit(EXIT_FAILURE);
 		}
-		free(content);
+		op_func(&stack, line_number);
+
 	}
-	free_stack(stack);
-	fclose(file);
-	return (0);
+	free(line);
+	fclose(script_file);
+	free_stack(&stack);
+	return (EXIT_SUCCESS);
 }

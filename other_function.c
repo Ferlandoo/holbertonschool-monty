@@ -9,19 +9,16 @@
 
 void add(stack_t **stack, unsigned int line_number)
 {
-	stack_t *temp;
-	int sum;
-
-	if (!stack || !(*stack) || !(*stack)->next)
+	if (*stack == NULL || (*stack)->next == NULL)
 	{
-		printf("L%u: can't add, stack too short\n", line_number);
+		fprintf(stderr, "L%u: can't add, stack too short\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	temp = *stack;
-	sum = temp->n + temp->next->n;
-	temp->next->n = sum;
-	*stack = temp->next;
+	int result = (*stack)->n + (*stack)->next->n;
+	stack_t *temp = *stack;
+	*stack = (*stack)->next;
 	free(temp);
+	(*stack)->n = result;
 }
 
 /**
@@ -42,15 +39,13 @@ void nop(stack_t **stack, unsigned int line_number)
 * @head: head of the stack
 */
 
-void free_stack(stack_t *head)
+void free_stack(stack_t **stack)
 {
-	stack_t *aux;
-
-	aux = head;
-	while (head)
+	while (*stack)
 	{
-		aux = head->next;
-		free(head);
-		head = aux;
+		stack_t *temp = (*stack)->next;
+
+		free(*stack);
+		*stack = temp;
 	}
 }
