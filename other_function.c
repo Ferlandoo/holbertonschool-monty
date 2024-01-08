@@ -35,9 +35,10 @@ void nop(stack_t **stack, unsigned int line_number)
 }
 
 /**
-* free_stack - frees a doubly linked list
-* @head: head of the stack
-*/
+ * free_stack - frees a stack_t stack.
+ * @stack: pointer to the head of a stack_t stack.
+ * Return: void
+ */
 
 void free_stack(stack_t **stack)
 {
