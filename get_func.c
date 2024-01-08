@@ -10,19 +10,23 @@
 
 void (*get_op(char *token))(stack_t **stack, unsigned int line_number)
 {
-	if (strcmp(token, "push") == 0)
-		return (push);
-	else if (strcmp(token, "pall") == 0)
-		return (pall);
-	else if (strcmp(token, "pint") == 0)
-		return (pint);
-	else if (strcmp(token, "pop") == 0)
-		return (pop);
-	else if (strcmp(token, "swap") == 0)
-		return (swap);
-	else if (strcmp(token, "add") == 0)
-		return (add);
-	else if (strcmp(token, "nop") == 0)
-		return (nop);
+	instruction_t op_funcs[] = {
+		{"push", push},
+		{"pall", pall},
+		{"pint", pint},
+		{"pop", pop},
+		{"swap", swap},
+		{"add", add},
+		{"nop", nop},
+		{NULL, NULL}
+	};
+	int i = 0;
+
+	while (op_funcs[i].opcode)
+	{
+		if (strcmp(token, op_funcs[i].opcode) == 0)
+			return (op_funcs[i].f);
+		i++;
+	}
 	return (NULL);
 }
